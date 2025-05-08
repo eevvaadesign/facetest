@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>選擇耳部</title>
+    <style>
+/* 讓 body 和 html 高度充滿視窗，並禁止滾動條 */
+body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden; /* 禁用外部滾動條 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #ffffff; /* 鵝黃色背景 */ }
+/* 虛擬框，保持寬高比例（1125px : 2255px） */
+.virtual-frame {
+            width: 100%;
+            height: 100vh;
+            max-width: calc(100vh * (1125 / 2255));
+            position: relative;
+            overflow: hidden;
+            background-image: url('images/bgear1.png'); /* 確保背景圖顯示 */
+            background-size: cover; /* 背景覆蓋整個容器 */
+            background-position: center;}
+.preview-box {
+  position: absolute;   /* or 你原本需要的定位 */
+  top: 34%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  height: 40%;
+  overflow: hidden;
+ /* border: 1px solid #000;
+  /* 新增：相對定位，讓 img 的絕對定位「參考」這個盒子 */
+  position: relative;}
+/* 這裡讓 img 以 preview-box 為參考 */
+.preview-img {
+  position: absolute;    
+  /* 先放大到比容器還大一點，比如 120%： */
+  width: 110%;           
+  height: auto;          /* 維持寬高比 */
+  /* 然後用 top/left 或 translate% 來移動畫面： */
+  top: -7.5%;              /* 往下 15% */
+  left: -2%;            /* 向左 10% */
+  /* 或者你也可以這麼寫： 
+  transform: translate(-10%, 15%); 
+  top: 0; left: 0; 
+  */
+  object-fit: cover;     /* 保持裁切規則 */}
+.option-panel {
+  position: absolute;
+  width: 84%;
+  height: 30%;
+  top: 72.5%;  
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  row-gap:0px;    /* 只改縱向間距 */
+  overflow: hidden;
+  z-index: 10;}
+.option-row {
+  display: flex;
+  flex: 1;               /* flex 分配剩餘高度，兩列剛好各 50%（扣掉 gap） */
+  width: 100%;
+  gap:2%;
+  /* justify-content 預設 flex-start，改成 space-between 或 center 視需求 */
+  justify-content: space-between; 
+  /* border: 1px solid #0f0;  測試用 */}
+.option-button {
+  flex: 1 1 auto;            /* 讓 basis 不是 0，寬度按內容＋gap 分配 */
+  aspect-ratio: 1 / 1;        /* 正方形 */
+  height: auto;               /* 取消被父容器的高度覆蓋 */
+  align-self: flex-start;     /* 也可以用 center，看你要上下對齊 */
+  /* 下面是原本的屬性 */
+  border-radius: 10px;
+  background-color: #f4f4f4;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: border .03s ease, background-color .03s ease;
+  border: 1px solid transparent;}
+.option-button.selected {
+  border-color: #000;}
+.option-button img {
+  position: absolute;
+  top: -50%;      /* 往上 10% */
+  left: -40%;     /* 往左 20% */
+  width: 300%;
+  height: 300%;
+  object-fit: cover;  /* 這行可以留也可以拿掉，因為你已經用絕對寬高覆蓋 */}
+
+.next-container {
+  position: absolute;
+  bottom: 1.25%; /* 可根據實際需求微調 */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  height: auto; /* 讓內容決定高度 */
+  z-index: 10;
+}
+.next-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.next-image {
+  width: 100%;
+  height: auto;
+}
+.back-button {
+  position: absolute;
+  width: 50px;
+  left:0%;
+  top:0%;
+  height: 35px;
+  background-color: #9c27b000; /* 藍色 */
+  cursor: pointer;
+  z-index: 5;
+  border-radius: 15px;
+}
+</style>
+</head>
+<body>
+   
+    <div class="virtual-frame">
+        <!-- 背景層 -->
+        <div class="background-container">
+            <!-- 直式背景 -->
+            <div class="vertical-background" id="bg3" style="background-image: url('images/bg3.png');"></div>
+        </div>
+
+        <!-- 預覽框 -->
+        <div class="preview-box">
+            <img id="previewear" class="preview-img" src="images/思想反骨.png" alt="預覽耳部">
+        </div>
+        <div class="back-button" onclick="history.back()"></div>
+      <!-- 選項區域 (橫3直2的選項區) -->
+<div class="option-panel">
+    <!-- 每列按鈕區域 -->
+    <div class="option-row">
+        <div class="option-button" data-ear="思想反骨.png">
+            <img src="images/思想反骨.png" alt="耳1">
+        </div>
+        <div class="option-button" data-ear="思想型.png">
+            <img src="images/思想型.png" alt="耳2">
+        </div>
+        <div class="option-button" data-ear="思想大反骨.png">
+            <img src="images/思想大反骨.png" alt="耳3">
+        </div>
+    </div>
+    <div class="option-row">
+        <div class="option-button" data-ear="運動反骨.png">
+            <img src="images/運動反骨.png" alt="耳4">
+        </div>
+        <div class="option-button" data-ear="運動型.png">
+            <img src="images/運動型.png" alt="耳5">
+        </div>
+        <div class="option-button" data-ear="運動大反骨.png">
+            <img src="images/運動大反骨.png" alt="耳6">
+        </div>
+    </div>
+
+</div>
+
+        <!-- 下一步按鈕 -->
+        <div class="next-container">
+            <button class="next-button" id="nextButton">
+                <img class="next-image" src="images/nextblack.png" alt="Next">
+            </button>
+        </div>
+
+
+    <script>document.addEventListener('DOMContentLoaded', function() {
+        const buttons = document.querySelectorAll('.option-button');
+        const previewEar = document.getElementById('previewear');
+        const nextButton = document.getElementById('nextButton');
+        const nextImg = document.querySelector('.next-image');
+    
+        // 點選耳朵選項按鈕
+        buttons.forEach(button => {
+            button.addEventListener('click', function() {
+                const earSrc = button.getAttribute('data-ear');
+                previewEar.src = `images/${earSrc}`;
+    
+                buttons.forEach(btn => btn.classList.remove('selected'));
+                button.classList.add('selected');
+            });
+        });
+        // 下一步按鈕的功能，顯示跳轉效果並跳轉到下一頁
+        nextButton.addEventListener('click', function() {
+            // 顯示跳轉效果
+            document.body.style.transition = 'opacity 0.3s ease-out';
+            document.body.style.opacity = 0;
+    
+            // 0.3秒後跳轉到下一頁
+            setTimeout(function() {
+                window.location.href = 'page4.html';
+            }, 300); // 跳轉延遲時間
+        });
+    });</script>
+</body>
+</html>

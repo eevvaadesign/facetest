@@ -1,0 +1,64 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>虛擬框上下捲動範例</title>
+  <link rel="stylesheet" href="page11.css" />
+</head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<body>
+
+  <div class="virtual-frame">
+    <!-- 長圖 -->
+    <img class="bg-img" src="images/新新版面-04-04.png" alt="長圖背景">
+  <!-- 動態標語 -->
+  <div class="slogan"></div>
+    <!-- 預覽框：裡面可以放臉、五官等 -->
+    <div class="preview-box">
+      <img id="face-layer"       class="preview-img" src="images/face (1).png"   alt="臉部">
+      <img id="previewEarLeft"   class="preview-img ear" src="images/earin (2).png" alt="左耳">
+      <img id="previewEarRight"  class="preview-img ear" src="images/earin (2).png" alt="右耳">
+
+      <img id="previewBrowLeft"  class="preview-img brow" src="images/brow1.png"    alt="左眉">
+      <img id="previewBrowRight" class="preview-img brow" src="images/brow1.png"    alt="右眉">
+
+      <img id="previewEyeLeft"   class="preview-img eye"  src="images/eye1.png"     alt="左眼">
+      <img id="previewEyeRight"  class="preview-img eye"  src="images/eye1.png"     alt="右眼">
+
+      <img id="previewNose"      class="preview-img nose" src="images/nose1.png"    alt="鼻子">
+      <img id="previewMouth"     class="preview-img mouth"src="images/mouth1.png"  alt="嘴巴">
+    </div>
+    <div id="face-description" class="text-box-face"></div>
+    <div id="ear-description" class="text-box-ear"></div>
+      <!-- 五官文字描述框 / 直排，從左到右依序：嘴巴、鼻子、眼睛、眉毛、耳朵 -->
+  <div id="mouth-description" class="text-box-mouth"></div>
+  <div id="nose-description"  class="text-box-nose"></div>
+  <div id="eye-description"   class="text-box-eye"></div>
+  <div id="brow-description"  class="text-box-brow"></div>
+  <div id="ear-description"   class="text-box-ear"></div>
+<!-- 選項按鈕 -->
+<div class="option-container">
+  <button id="opt1" class="option-btn">對對對！</button>
+  <button id="opt2" class="option-btn">有點道理喔</button>
+  <button id="opt3" class="option-btn">差十萬八千里</button>
+</div>
+<!-- 百分比顯示 -->
+<div id="result-stats" style="margin-top:1rem;"></div>
+
+<!-- 底部操作按鈕 -->
+<div id="action-buttons" style="margin-top:2rem; display:flex; gap:1rem;">
+  <button id="save-btn">📥 儲存圖片</button>
+  <button id="home-btn">🏠 回到第一頁</button>
+  <button id="share-btn">📲 分享到 IG</button>
+</div>
+
+  </div>
+  </div>
+
+  <script src="page11.js"></script>
+</body>
+</html>
+

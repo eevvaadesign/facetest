@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>選擇眉型</title>
+  <style>/* 基本設定：滿版且置中 */
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      background-color: #ffffff;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    /* 虛擬框架（類似手機畫面） */
+    .virtual-frame {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      max-width: calc(100vh * (1125 / 2255));
+      overflow: hidden;
+      background-image: url('images/bg5.png');
+      background-size: cover;
+      background-position: center;
+      z-index: 0;
+    }
+    
+    /* 預覽框：顯示臉、耳、眉 */
+    .preview-box {
+      position: absolute;
+      top: 34%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 78%;
+      height: 40%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: visible;
+      z-index: 1;
+    }
+    
+    /* 所有預覽圖片 */
+    .preview-img {
+      position: absolute;
+      transform: scale(1);
+      max-width: 100%;
+      max-height: 100%;
+      pointer-events: none;
+    }
+    
+    /* 臉部圖層 */
+    #face-layer {
+      z-index: 3;
+    }
+    
+    .ear {
+      position: relative;
+      top: 50%; /* 放在預覽框高度的中間 */
+      transform: translateY(-50%); /* 垂直置中 */
+      max-width: 40%;
+      max-height: 100%;
+      z-index: 2;
+    
+    }
+    
+    /* 左耳：往左偏移 */
+    #previewEarLeft {
+      left: 50%;
+      transform: translate(-50%, -50%) scaleX(-1);
+    }
+    
+    /* 右耳：往右偏移 */
+    #previewEarRight {
+      right: 50%;
+      transform: translate(50%, -50%);
+    }
+    
+    /* 眉毛設定 */
+    .brow {
+      width: 22%;
+      z-index: 12;
+    }
+    /* 左眉：鏡射效果，定位用 right + top */
+    #previewBrowLeft {
+      transform: translate(-53%, -100%)scaleX(-1);
+    }
+    
+    /* 右眉：定位用 left + top */
+    #previewBrowRight {
+      left: 52.5%;
+      transform:  translate(-8%, -100%)scaleX(1);
+    }
+    
+    /* 選項面板（3×3 眉型選項，可滑動） */
+    /* 選項面板（仍使用 Flex 排列） */
+    .option-panel {
+      position: absolute;
+      top: 56.5%;
+      left: 51%;
+      transform: translateX(-50%);
+      width: 86%;
+      height: 30vh;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5%;
+      overflow-y: auto;
+      overflow-x: hidden;
+      z-index: 10;
+    }
+    .option-panel::-webkit-scrollbar {
+      display: none;
+    }
+    
+    /* 每行選項排列 */
+    .option-row {
+      display: flex;
+      justify-content: space-around; /* 平均分佈 */
+      width: 100%;
+    }
+    
+    /* 每個選項按鈕 */
+    .option-button {
+      flex: 1;
+      /* 使用百分比保持正方形：這裡利用 padding-top 產生比例 */
+      position: relative;
+      margin: 5px;
+      background-color: #f4f4f4;
+      border: 2px solid transparent;
+      border-radius: 10px;
+      transition: border 0.03s ease, background-color 0.03s ease;
+      z-index: 11;
+    }
+    
+    /* 讓按鈕內部維持正方形 */
+    .option-button::before {
+      content: "";
+      display: block;
+      padding-top: 100%; /* 1:1 的比例 */
+    }
+    
+    /* 內部圖片絕對定位填滿父容器 */
+    .option-button img {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 80%;
+      height: 80%;
+      transform: translate(-50%, -50%);
+      object-fit: contain;
+    }
+    
+    /* 選中按鈕狀態 */
+    .option-button.selected {
+      border: 1px solid #000;
+      background-color: #f4f4f4;
+    }
+    
+    
+    
+    .next-container {
+      position: absolute;
+      bottom: 1.2%; /* 可根據實際需求微調 */
+      left: 50%;
+      transform: translateX(-50%);
+      width: 91%;
+      height: auto; /* 讓內容決定高度 */
+      z-index: 15;
+    }
+    
+    
+    .next-button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+    
+    .next-image {
+      width: 100%;
+      height: auto;
+    }
+    .back-button {
+      position: absolute;
+      width: 50px;
+      left:0%;
+      top:0%;
+      height: 35px;
+      background-color: #9c27b000; /* 藍色 */
+      cursor: pointer;
+      z-index: 5;
+      border-radius: 15px;
+    }</style>
+</head>
+<body>
+  <div class="virtual-frame">
+     <!-- 下一步按鈕（獨立） -->
+     <div class="next-container">
+        <button class="next-button" id="nextButton">
+          <img class="next-image" src="images/nextblack.png" alt="Next">
+        </button>
+      </div>
+       <!-- 返回按鈕（獨立，不隱藏選項區） -->
+       <div class="back-button" onclick="history.back()"></div>
+  
+    <!-- 預覽框：從上一頁載入的臉部與耳朵、以及本頁眉型 -->
+    <div class="preview-box">
+      <img id="face-layer" class="preview-img" src="images/face (1).png" alt="預覽臉部">
+      <img id="previewEarLeft" class="ear" src="images/earin (2).png" alt="左耳">
+      <img id="previewEarRight" class="ear" src="images/earin (2).png" alt="右耳">
+      <img id="previewBrowLeft" class="preview-img brow" src="images/brow1.png" alt="左眉">
+      <img id="previewBrowRight" class="preview-img brow" src="images/brow1.png" alt="右眉">
+    </div>
+<!-- 選項區域（3×3 眉型選項，可上下滑動） -->
+<div class="option-panel">
+  <div class="option-row">
+    <div class="option-button" data-brow="brow1.png" data-brow-type="有稜有角偏細">
+      <img src="images/brow1.png" alt="眉毛1">
+    </div>
+    <div class="option-button" data-brow="brow2.png" data-brow-type="有稜有角">
+      <img src="images/brow2.png" alt="眉毛2">
+    </div>
+    <div class="option-button" data-brow="brow3.png" data-brow-type="有稜有角偏粗">
+      <img src="images/brow3.png" alt="眉毛3">
+    </div>
+  </div>
+  <div class="option-row">
+    <div class="option-button" data-brow="brow4.png" data-brow-type="細細彎彎">
+      <img src="images/brow4.png" alt="眉毛4">
+    </div>
+    <div class="option-button" data-brow="brow5.png" data-brow-type="彎彎">
+      <img src="images/brow5.png" alt="眉毛5">
+    </div>
+    <div class="option-button" data-brow="brow6.png" data-brow-type="粗一些彎彎">
+      <img src="images/brow6.png" alt="眉毛6">
+    </div>
+  </div>
+  <div class="option-row">
+    <div class="option-button" data-brow="brow7.png" data-brow-type="一字眉">
+      <img src="images/brow7.png" alt="眉毛7">
+    </div>
+    <div class="option-button" data-brow="brow8.png" data-brow-type="粗一字眉">
+      <img src="images/brow8.png" alt="眉毛8">
+    </div>
+    <div class="option-button" data-brow="brow9.png" data-brow-type="下垂眉">
+      <img src="images/brow9.png" alt="眉毛9">
+    </div>
+  </div>
+</div>
+
+  <script>document.addEventListener('DOMContentLoaded', () => {
+    const browButtons = document.querySelectorAll('.option-button'); // 改為選擇 .option-button
+    const previewBrowLeft = document.getElementById('previewBrowLeft');
+    const previewBrowRight = document.getElementById('previewBrowRight');
+    const previewEarLeft = document.getElementById('previewEarLeft');
+    const previewEarRight = document.getElementById('previewEarRight');
+    const previewFace = document.getElementById('face-layer');
+    const nextButton = document.getElementById('nextButton');
+  
+    // 1. 顯示臉型
+    if (previewFace) {
+      const savedFace = localStorage.getItem('selectedFace');
+      if (savedFace) {
+        previewFace.src = savedFace;
+      }
+    }
+  
+    // 2. 顯示耳朵（從 page4 選的）
+    const savedEar = localStorage.getItem('selectedEar');
+    if (savedEar) {
+      try {
+        const earData = JSON.parse(savedEar);
+        if (previewEarLeft && previewEarRight) {
+          previewEarLeft.src = earData.src;
+          previewEarRight.src = earData.src;
+  
+          // 如果你有設定 scale / height，可以在這裡加 style 設定
+          previewEarLeft.style.transform = `scale(${earData.scale})`;
+          previewEarRight.style.transform = `scale(${earData.scale}) scaleX(-1)`; // 鏡像右耳
+          previewEarLeft.style.top = `${earData.height}px`;
+          previewEarRight.style.top = `${earData.height}px`;
+        }
+      } catch (err) {
+        console.error('耳朵資料解析錯誤', err);
+      }
+    }
+  
+    browButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        // 使用 dataset 取得 data-brow 的值
+        const selectedBrowImage = button.dataset.brow;
+        
+        // 確認有取得資料後再處理
+        if (selectedBrowImage) {
+          // 產生完整的圖片路徑
+          const browSrc = `images/${selectedBrowImage}`;
+          
+          // 更新預覽框中的左右眉
+          if (previewBrowLeft && previewBrowRight) {
+            previewBrowLeft.src = browSrc;
+            previewBrowRight.src = browSrc;
+          }
+          
+          // 儲存到 localStorage，只用一個 key，之後讀取統一設定左右眉
+          localStorage.setItem('selectedBrow', browSrc);
+          
+        }
+    
+        // 將所有按鈕移除選中狀態，並將當前按鈕加入 selected 樣式
+        browButtons.forEach(btn => btn.classList.remove('selected'));
+        button.classList.add('selected');
+      });
+    });
+    // 4. 下一步
+    if (nextButton) {
+      nextButton.addEventListener('click', () => {
+        document.body.style.transition = "opacity 0.3s ease-out";
+      document.body.style.opacity = 0;
+        const nextImg = nextButton.querySelector('.next-image');
+    
+        if (nextImg) {
+          nextImg.src = 'images/nextgray.png'; // 替換圖片
+        }
+    
+        // 延遲跳轉（可依動畫時間調整）
+        setTimeout(() => {
+          window.location.href = 'page6.html';
+        }, 200); // 300ms = 0.3 秒動畫時間
+      });
+    }
+  });
+  </script>
+</body>
+</html>

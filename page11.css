@@ -1,0 +1,286 @@
+    /* ---- 全域重置 & 容器置中 ---- */
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;           /* 關閉整頁滾動 */
+      background-color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    /* ---- 虛擬框：固定高度 + 允許垂直捲動 ---- */
+    .virtual-frame {
+      position: relative;         /* 讓內部絕對定位參考它 */
+      width: 100%;
+      max-width: calc(100vh * (1125 / 2255)); /* 保持 9:16 比例 */
+      height: 100vh;               /* 視窗 90% 高度 */
+      overflow-y: auto;           /* 啟用垂直捲動 */
+      overflow-x: hidden;
+      background-color: #fafafa;  /* 若圖片尚未載入時的底色 */
+      font-size: 2vw;
+    }
+
+    /* 長圖本體 */
+    .virtual-frame .bg-img {
+      display: block;
+      width: 100%;
+      height: auto;               /* 自適應高度 */
+    }
+
+    /* ---- 預覽框：絕對定位在虛擬框內 ---- */
+    .preview-box {
+      position: absolute;       
+      top: 40%;                   /* 依你原本設定 */
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 78%;
+      height: 40%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;       /* 避免擋到滑動 */
+      z-index: 10;
+    }
+  /* 所有預覽圖片 */
+  .preview-img {
+    position: absolute;
+    max-width: 100%;
+    max-height: 100%;
+    pointer-events: none;
+  }
+  
+  /* 臉部 */
+  #face-layer {
+    z-index: 3;
+  }
+  
+  .ear {
+    position: relative;
+    top: 50%; /* 放在預覽框高度的中間 */
+    transform: translateY(-50%); /* 垂直置中 */
+    max-width: 40%;
+    max-height: 100%;
+    z-index: 2;
+  }
+  
+  /* 左耳：往左偏移 */
+  #previewEarLeft {
+    left: 50%;
+  
+    transform: translate(-50%, -50%) scaleX(-1);
+  }
+  
+  /* 右耳：往右偏移 */
+  #previewEarRight {
+    right: 50%;
+    transform: translate(50%, -50%);
+  }
+/* 眉毛設定 */
+.brow {
+  width: 22%;
+  z-index: 12;
+}
+/* 左眉：鏡射效果，定位用 right + top */
+#previewBrowLeft {
+  transform: translate(6%, 50%)scaleX(-1);
+}
+
+/* 右眉：定位用 left + top */
+#previewBrowRight {
+  left: 52.5%;
+  transform:  translate(-6%, 50%)scaleX(1);
+}
+  /* 眼睛樣式 */
+  .eye {
+    width: 16%;
+    z-index: 11;
+  }
+  /* 左眼：定位可依需求微調 */
+  #previewEyeLeft {
+    left: 28.8%;
+    top: 41%;
+    transform: scaleX(-1);
+  }
+  /* 右眼 */
+  #previewEyeRight {
+    right: 28.8%;
+    top: 41%;
+    transform: scaleX(1);
+  }
+   /* 鼻子 */
+   .nose {
+    position: absolute;
+    top: 56%;       /* 臉部中央（可微調） */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 24%;      /* 根據鼻子圖的大小需求調整 */
+    z-index: 20;     /* 高於其他圖層，確保顯示在最上層 */
+    pointer-events: none;  /* 鼠標穿透 */
+    opacity:90%
+  }
+  .mouth {
+    position: absolute;
+    top: 74.5%;         /* 根據臉的比例位置微調，位於鼻子下方 */
+    left: 49.6%;
+    transform: translate(-50%, -50%);
+    width: 22.5%;       /* 嘴巴寬度可依圖檔大小調整 */
+    z-index: 21;      /* 高於鼻子，顯示在最上層 */
+    pointer-events: none;
+  }
+  .slogan {
+    position: absolute;
+    top: 16.7%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 3.5vh;
+    font-weight: bold;
+    letter-spacing: .1em;
+    z-index: 5;
+    color: #000;
+     font-family: 'Genryu Mincho', serif;
+  }
+  .text-box-face {
+    /* 位置、尺寸不變 */
+    position: absolute;
+    top: 62%;
+    left: 82.5%;
+    transform: translateX(-50%);
+    z-index: 15;
+    width: 6%;
+    height: 26%;
+  
+    /* 直排設定 */
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    white-space: normal;
+    overflow-wrap: break-word;
+  
+    /* 字形、字距、行高 */
+    font-family: 'Genryu Mincho', serif;   /* 例如使用詩意明朝體 */
+    font-size: 2vh;
+    line-height: 1.4;                      /* 行高微調 */
+    letter-spacing: 0.08em;                /* 字距 0.05em */
+    /* 背景與內距 */
+    border-radius: 8px;
+    padding: 0.3rem;
+  }
+  
+/* 統一高度、字體、內距、列間距，並調整行高與字距 */
+.text-box-ear,
+.text-box-brow,
+.text-box-eye,
+.text-box-nose,
+.text-box-mouth {
+  position: absolute;
+  top: 64%;
+  transform: translateX(-50%);
+  z-index: 15;
+
+  height: 35.8vh;                 /* 保持原高度 */
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  white-space: normal;
+  overflow-wrap: break-word;
+
+  font-size: 1.1vh;             /* 保持原字體大小 */
+  letter-spacing: 0vh;        /* 新增字距，讓字元水平間距更寬鬆 */
+  line-height: 1.4;
+  column-gap: 2vh;
+  color: #333;
+
+  background: rgb(255 255 255 / 0%);  
+  border-radius: 3px;
+
+  padding-top:    0.5vh;        /* 保持原內距 */
+  padding-bottom: 0.2vh;
+  padding-left:   0.5vh;
+  padding-right:  0.5vh;
+}
+
+/* 各自保留的左右位置 */
+.text-box-ear   { left: 63.89%; }
+.text-box-brow  { left: 55%; }
+.text-box-eye   { left: 45.6%; }
+.text-box-nose  { left: 36.3%; }
+.text-box-mouth { left: 26.8%; }
+
+
+@font-face {
+    font-family: 'Genryu Mincho';
+    src: url('font/GenRyuMin-B.ttc') format('truetype');  /* 使用相對路徑 */
+    font-weight: normal;
+    font-style: normal;
+}
+.option-container {
+  position: absolute;
+  top: 130%;              /* 保留原位置 */
+  left: 66.8%;              /* 保留原位置 */
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5vh;             /* 选项间距用 vh */
+  z-index: 20;
+}
+
+/* 按钮与进度条共同设置 */
+.option-btn{
+  width: 19vh;            /* 按钮宽度：25vh */
+  height: 3.85vh;            /* 按钮高度：5vh */
+  font-size: 2vh;         /* 字体大小：2vh */
+  border: 0.1vh solid #7c7c7c;
+  border-radius: 1vh;     /* 圆角：1vh */
+  background: #fff;
+  cursor: pointer;
+  text-align: center;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.progress-bar {
+  width: 19vh;            /* 按钮宽度：25vh */
+  height: 3.8vh;            /* 按钮高度：5vh */
+  font-size: 2vh;         /* 字体大小：2vh */
+  border: 0.1vh solid #7c7c7c;
+  border-radius: 1vh;     /* 圆角：1vh */
+  background: #fff;
+  cursor: pointer;
+  text-align: center;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 进度条外框 */
+.progress-bar {
+  position: relative;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.progress-bar .fill {
+  position: absolute;
+  top: 0;               /* 对齐顶部 */
+  left: 0;              /* 从左侧开始 */
+  width: 0;             /* 宽度由 JS 动态改变 */
+  height: 100%;         /* 填满按钮高度 */
+  background: #000000;
+  
+  display: flex;        /* 用 flex 来控制文字对齐 */
+  align-items: center;  /* 垂直居中 */
+  justify-content: flex-end; /* 文本靠右 */
+  padding-right: 0.5vh; /* 右侧留点内边距，不贴边 */
+
+  color: #fff;
+  font-size: 1.2vh;
+  font-weight: bold;
+  font-family: 'Microsoft JhengHei', sans-serif;
+
+  border-radius: 1vh;
+  transition: width 0.6s ease;
+}
+

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>選擇臉部</title>
+    <style>/* 讓 body 和 html 高度充滿視窗，並禁止滾動條 */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden; /* 禁用外部滾動條 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #ffffff; /* 鵝黃色背景 */
+        }
+        
+        /* 虛擬框，保持寬高比例（1125px : 2255px） */
+        .virtual-frame {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            max-width: calc(100vh * (1125 / 2255));
+            overflow: hidden;
+            background-image: url('images/bg3.png'); /* 確保背景圖顯示 */
+            background-size: cover; /* 背景覆蓋整個容器 */
+            background-position: center;
+        }
+        
+        /* 預覽框 */
+        .preview-box {
+            position: absolute;
+            top: 34%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 78%;
+            height: 40%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .preview-img {
+            transform: scale(1);
+            max-width: 100%;
+            max-height: 100%;
+        }
+        
+.option-panel {
+  position: absolute;
+  width: 84%;
+  height: 30vh;
+  top: 72.5%;  
+  left: 51%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  row-gap:0px;    /* 只改縱向間距 */
+  overflow: hidden;
+  z-index: 10;}        
+.option-row {
+  display: flex;
+  flex: 1;               /* flex 分配剩餘高度，兩列剛好各 50%（扣掉 gap） */
+  width: 100%;
+  gap:2%;
+  /* justify-content 預設 flex-start，改成 space-between 或 center 視需求 */
+  justify-content: space-between; 
+  /* border: 1px solid #0f0;  測試用 */}
+.option-button {
+  flex: 1 1 auto;            /* 讓 basis 不是 0，寬度按內容＋gap 分配 */
+  aspect-ratio: 1 / 1;        /* 正方形 */
+  height: auto;               /* 取消被父容器的高度覆蓋 */
+  align-self: flex-start;     /* 也可以用 center，看你要上下對齊 */
+  /* 下面是原本的屬性 */
+  border-radius: 10px;
+  background-color: #f4f4f4;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: border .03s ease, background-color .03s ease;
+  border: 1px solid transparent;}
+
+ /* 按鈕中的圖片 */
+.option-button img {
+            width: 100%;
+            height: 100%;
+            left: -5%;     /* 往左 20% */
+            object-fit: cover;}
+
+ /* 選中按鈕的效果 */
+.option-button.selected {
+border: 1px solid #000000;
+background-color: #F4F4F4;}
+
+ .next-container {
+  position: absolute;
+  bottom: 1.25%; /* 可根據實際需求微調 */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  height: auto; /* 讓內容決定高度 */
+  z-index: 10;
+}
+.next-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.next-image {
+  width: 100%;
+  height: auto;
+}
+.back-button {
+  position: absolute;
+  width: 50px;
+  left:0%;
+  top:0%;
+  height: 35px;
+  background-color: #9c27b000; /* 藍色 */
+  cursor: pointer;
+  z-index: 5;
+  border-radius: 15px;
+}
+ </style>
+</head>
+<body>
+   
+    <div class="virtual-frame">
+        <!-- 背景層 -->
+        <div class="background-container">
+            <!-- 直式背景 -->
+            <div class="vertical-background" id="bg3" style="background-image: url('images/bg3.png');"></div>
+        </div>
+
+        <!-- 預覽框 -->
+        <div class="preview-box">
+            <img id="previewFace" class="preview-img" src="images/face (1).png" alt="預覽臉部">
+        </div>
+        <div class="back-button" onclick="history.back()"></div>
+      <!-- 選項區域 (橫3直2的選項區) -->
+      <div class="option-panel">
+        <div class="option-row">
+            <div class="option-button" data-face="face (1).png" data-face-type="長方臉"> 
+                <img src="images/face (1).png" alt="臉1">
+            </div>
+            <div class="option-button" data-face="face (2).png" data-face-type="方臉">
+                <img src="images/face (2).png" alt="臉2">
+            </div>
+            <div class="option-button" data-face="face (3).png" data-face-type="甲字臉">
+                <img src="images//face (3).png" alt="臉3">
+            </div>
+        </div>
+        <div class="option-row">
+            <div class="option-button" data-face="face (4).png" data-face-type="鵝蛋臉">
+                <img src="images/face (4).png" alt="臉4">
+            </div>
+            <div class="option-button" data-face="face (5).png" data-face-type="由字臉">
+                <img src="images/face (5).png" alt="臉5">
+            </div>
+            <div class="option-button" data-face="face (6).png" data-face-type="圓臉">
+                <img src="images/face (6).png" alt="臉6">
+            </div>
+        </div>
+    </div>
+        <!-- 下一步按鈕 -->
+        <div class="next-container">
+            <button class="next-button" id="nextButton">
+                <img class="next-image" src="images/nextblack.png" alt="Next">
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+    const buttons = document.querySelectorAll('.option-button');
+    const previewFace = document.getElementById('previewFace');
+    const nextButton = document.getElementById('nextButton');
+
+    buttons.forEach(button => {
+        button.addEventListener('click', function () {
+    // 取得圖片 src
+    const selectedImg = button.querySelector('img');
+    if (selectedImg) {
+        const selectedSrc = selectedImg.getAttribute('src');
+
+        // 顯示在預覽圖
+        previewFace.src = selectedSrc;
+
+        // 👉 存入 localStorage
+        const savedFace = selectedSrc;  // ⬅️ 用你剛剛抓到的選擇圖片
+        const faceType = button.dataset.faceType;
+
+        localStorage.setItem('selectedFace', selectedSrc);
+        localStorage.setItem('selectedFaceType', faceType);
+
+        // 切換選取樣式
+        buttons.forEach(btn => btn.classList.remove('selected'));
+        button.classList.add('selected');
+    }
+});
+
+    });
+
+    // 下一步跳轉
+    if (nextButton) {
+        nextButton.addEventListener('click', function () {
+            document.body.style.transition = 'opacity 0.3s ease-out';
+            document.body.style.opacity = 0;
+            setTimeout(function () {
+                window.location.href = 'page3.html';
+            }, 300);
+        });
+    }
+});
+
+    </script>
+</body>
+</html>

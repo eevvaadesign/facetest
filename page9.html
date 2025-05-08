@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>選擇鼻子</title>
+    <link rel="stylesheet" href="page9.css">
+</head>
+<body>
+    <body>
+        <div class="virtual-frame">
+          <!-- 返回按鈕 -->
+          <div class="back-button" onclick="history.back()"></div>
+      
+          <!-- 預覽框：包含臉、耳、眉、眼 -->
+          <div class="preview-box">
+            <img id="face-layer" class="preview-img" src="images/face (1).png" alt="臉部">
+            <img id="previewEarLeft" class="ear" src="images/earin (2).png" alt="左耳">
+            <img id="previewEarRight" class="ear" src="images/earin (2).png" alt="右耳">
+            <img id="previewBrowLeft" class="preview-img brow" src="images/brow1.png" alt="左眉">
+            <img id="previewBrowRight" class="preview-img brow" src="images/brow1.png" alt="右眉">
+            <img id="previewEyeLeft" class="preview-img eye" src="images/eye1.png" alt="左眼">
+            <img id="previewEyeRight" class="preview-img eye" src="images/eye1.png" alt="右眼">
+            <img id="previewNose" class="preview-img nose" src="images/nose1.png" alt="預覽鼻子">
+        </div>
+        <div class="back-button" onclick="history.back()"></div>
+        
+        <!-- 選項區域 (橫3直2的選項區) -->
+        <div class="option-panel">
+            <!-- 每列按鈕區域 -->
+            <div class="option-row">
+                <div class="option-button" data-nose="nose1.png">
+                    <img src="images/nose1.png" alt="鼻子1">
+                </div>
+                <div class="option-button" data-nose="nose2.png">
+                    <img src="images/nose2.png" alt="鼻子2">
+                </div>
+                <div class="option-button" data-nose="nose3.png">
+                    <img src="images/nose3.png" alt="鼻子3">
+                </div>
+            </div>
+            <div class="option-row">
+                <div class="option-button" data-nose="nose4.png">
+                    <img src="images/nose4.png" alt="鼻子4">
+                </div>
+                <div class="option-button placeholder"></div>
+                <div class="option-button placeholder"></div>
+                </div>
+            </div>
+
+        <!-- 下一步按鈕 -->
+        <div class="next-container">
+            <button class="next-button" id="nextButton">
+                <img class="next-image" src="images/nextblack.png" alt="Next">
+            </button>
+        </div>
+    </div>
+    <script src="page9.js"></script>
+</body>
+</html>

@@ -1,0 +1,220 @@
+/* 基本設定：滿版且置中 */
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    background-color: #ffffff;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* 虛擬框架（模擬手機螢幕） */
+  .virtual-frame {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    max-width: calc(100vh * (1125 / 2255));
+    background-image: url('images/未命名-2_工作區域 1 複本 2.png'); /* 與前幾頁使用相同背景 */
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+    z-index: 0;
+  }
+  
+  /* 預覽框：顯示臉、耳、眉、眼 */
+  .preview-box {
+    position: absolute;
+    top: 34%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 78%;
+    height: 40%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+    z-index: 1;
+  }
+  
+  /* 所有預覽圖片 */
+  .preview-img {
+    position: absolute;
+    max-width: 100%;
+    max-height: 100%;
+    pointer-events: none;
+  }
+  
+  /* 臉部 */
+  #face-layer {
+    z-index: 3;
+  }
+  
+  
+  .ear {
+    position: relative;
+    top: 50%; /* 放在預覽框高度的中間 */
+    transform: translateY(-50%); /* 垂直置中 */
+    max-width: 40%;
+    max-height: 100%;
+    z-index: 2;
+  }
+  
+  /* 左耳：往左偏移 */
+  #previewEarLeft {
+    left: 50%;
+  
+    transform: translate(-50%, -50%) scaleX(-1);
+  }
+  
+  /* 右耳：往右偏移 */
+  #previewEarRight {
+    right: 50%;
+    transform: translate(50%, -50%);
+  }
+/* 眉毛設定 */
+.brow {
+  width: 22%;
+  z-index: 12;
+}
+/* 左眉：鏡射效果，定位用 right + top */
+#previewBrowLeft {
+  transform: translate(6%, 50%)scaleX(-1);
+}
+
+/* 右眉：定位用 left + top */
+#previewBrowRight {
+  left: 52.5%;
+  transform:  translate(-6%, 50%)scaleX(1);
+}
+
+  
+  /* 眼睛樣式 */
+  .eye {
+    width: 16%;
+    z-index: 11;
+  }
+  /* 左眼：定位可依需求微調 */
+  #previewEyeLeft {
+    left: 28.8%;
+    top: 41%;
+    transform: scaleX(-1);
+  }
+  /* 右眼 */
+  #previewEyeRight {
+    right: 28.8%;
+    top: 41%;
+    transform: scaleX(1);
+  }
+  /* 鼻子 */
+  .nose {
+    position: absolute;
+    top: 56%;       /* 臉部中央（可微調） */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 24%;      /* 根據鼻子圖的大小需求調整 */
+    z-index: 20;     /* 高於其他圖層，確保顯示在最上層 */
+    pointer-events: none;  /* 鼠標穿透 */
+    opacity:90%
+  }
+
+  .option-panel {
+    position: absolute;
+    width: 84%;
+    height: 30vh;
+    top: 72.5%;  
+    left: 51%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    row-gap:0px;    /* 只改縱向間距 */
+    overflow: hidden;
+    z-index: 10;}        
+  .option-row {
+    display: flex;
+    flex: 1;               /* flex 分配剩餘高度，兩列剛好各 50%（扣掉 gap） */
+    width: 100%;
+    gap:2%;
+    /* justify-content 預設 flex-start，改成 space-between 或 center 視需求 */
+    justify-content: space-between; 
+    /* border: 1px solid #0f0;  測試用 */}
+  .option-button {
+    flex: 1 1 auto;            /* 讓 basis 不是 0，寬度按內容＋gap 分配 */
+    aspect-ratio: 1 / 1;        /* 正方形 */
+    height: auto;               /* 取消被父容器的高度覆蓋 */
+    align-self: flex-start;     /* 也可以用 center，看你要上下對齊 */
+    /* 下面是原本的屬性 */
+    border-radius: 10px;
+    background-color: #f4f4f4;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: border .03s ease, background-color .03s ease;
+    border: 1px solid transparent;}
+  
+  /* 選項按鈕 */
+  .option-button {
+    flex: 1;
+    position: relative;
+    margin: 5px;
+    background-color: #f4f4f4;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    transition: border 0.03s, background-color 0.03s;
+    z-index: 11;
+  }
+  .option-button::before {
+    content: "";
+    display: block;
+    padding-top: 100%; /* 維持正方形 */
+  }
+  .option-button img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 80%;
+    height: 80%;
+    transform: translate(-50%, -50%);
+    object-fit: contain;
+  }
+  .option-button.selected {
+    border: 1px solid #000;
+    background-color: #f4f4f4;
+  }
+  
+  /* 下一步按鈕 */
+  .next-container {
+    position: absolute;
+    bottom: 1.2%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 91%;
+    z-index: 15;
+  }
+  .next-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  .next-image {
+    width: 100%;
+    height: auto;
+  }
+  
+  /* 返回按鈕 */
+  .back-button {
+    position: absolute;
+    width: 50px;
+    left: 0;
+    top: 0;
+    height: 35px;
+    background-color: transparent;
+    cursor: pointer;
+    z-index: 5;
+  }
+  

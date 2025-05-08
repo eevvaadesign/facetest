@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>選擇眼睛</title>
+  <style>/* 基本設定：滿版且置中 */
+    html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+        background-color: #ffffff;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      
+      /* 虛擬框架（模擬手機螢幕） */
+      .virtual-frame {
+        position: relative;
+        width: 100%;
+        height: 100vh;
+        max-width: calc(100vh * (1125 / 2255));
+        background-image: url('images/bg6.png'); /* 與前幾頁使用相同背景 */
+        background-size: cover;
+        background-position: center;
+        overflow: hidden;
+        z-index: 0;
+      }
+      
+      /* 預覽框：顯示臉、耳、眉、眼 */
+      .preview-box {
+        position: absolute;
+        top: 34%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 78%;
+        height: 40%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: visible;
+        z-index: 1;
+      }
+      
+      /* 所有預覽圖片 */
+      .preview-img {
+        position: absolute;
+        max-width: 100%;
+        max-height: 100%;
+        pointer-events: none;
+      }
+      
+      /* 臉部 */
+      #face-layer {
+        z-index: 3;
+      }
+      
+      
+      .ear {
+        position: relative;
+        top: 50%; /* 放在預覽框高度的中間 */
+        transform: translateY(-50%); /* 垂直置中 */
+        max-width: 40%;
+        max-height: 100%;
+        z-index: 2;
+    
+      }
+      
+      /* 左耳：往左偏移 */
+      #previewEarLeft {
+        left: 50%;
+      
+        transform: translate(-50%, -50%) scaleX(-1);
+      }
+      
+      /* 右耳：往右偏移 */
+      #previewEarRight {
+        right: 50%;
+        transform: translate(50%, -50%);
+      }
+      /* 眉毛 */
+      .brow {
+        width: 22%;
+        z-index: 12;
+      }
+    /* 左眉：鏡射效果，定位用 right + top */
+    #previewBrowLeft {
+      transform: translate(6%, 50%)scaleX(-1);
+    }
+    
+    /* 右眉：定位用 left + top */
+    #previewBrowRight {
+      left: 52.5%;
+      transform:  translate(-6%, 50%)scaleX(1);
+    }
+    
+      
+      /* 眼睛樣式 */
+      .eye {
+        width: 16%;
+        z-index: 11;
+      }
+      /* 左眼：定位可依需求微調 */
+      #previewEyeLeft {
+        left:30.1%;
+        top: 41%;
+        transform: scaleX(-1);
+      }
+      /* 右眼 */
+      #previewEyeRight {
+        right: 30.1%;
+        top: 41%;
+        transform: scaleX(1);
+      }
+      
+      /* 選項面板（眼睛選項，參考 page5） */
+      .option-panel {
+        position: absolute;
+        top: 57%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        height: 30vh;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        z-index: 10;
+      }
+      .option-panel::-webkit-scrollbar {
+        display: none;
+      }
+      .option-row {
+        display: flex;
+        justify-content: space-around;  /* 適合 3 個選項時的平均分布 */
+        width: 100%;
+      }
+      
+      /* 如果最後一行只有一個選項，可以用 media query 或針對 .option-row:last-child 調整 */
+      .option-panel .option-row:last-child {
+        justify-content: center;
+      }
+      /* 選項按鈕 */
+      .option-button {
+        flex: 1;
+        position: relative;
+        margin: 5px;
+        background-color: #f4f4f4;
+        border: 2px solid transparent;
+        border-radius: 10px;
+        transition: border 0.03s, background-color 0.03s;
+        z-index: 11;
+      }
+      .option-button::before {
+        content: "";
+        display: block;
+        padding-top: 100%; /* 維持正方形 */
+      }
+      .option-button img {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 80%;
+        height: 80%;
+        transform: translate(-50%, -50%);
+        object-fit: contain;
+      }
+      .option-button.selected {
+        border: 1px solid #000;
+        background-color: #f4f4f4;
+      }
+      
+      /* 下一步按鈕 */
+      .next-container {
+        position: absolute;
+        bottom: 1.2%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 91%;
+        z-index: 15;
+      }
+      .next-button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+      }
+      .next-image {
+        width: 100%;
+        height: auto;
+      }
+      
+      /* 返回按鈕 */
+      .back-button {
+        position: absolute;
+        width: 50px;
+        left: 0;
+        top: 0;
+        height: 35px;
+        background-color: transparent;
+        cursor: pointer;
+        z-index: 5;
+      }
+      </style>
+</head>
+<body>
+  <div class="virtual-frame">
+    <!-- 返回按鈕 -->
+    <div class="back-button" onclick="history.back()"></div>
+    
+    <!-- 預覽框：顯示臉、耳、眉、眼 -->
+    <div class="preview-box">
+      <img id="face-layer" class="preview-img" src="images/face (1).png" alt="預覽臉部">
+      <img id="previewEarLeft" class="ear" src="images/earin (2).png" alt="左耳">
+      <img id="previewEarRight" class="ear" src="images/earin (2).png" alt="右耳">
+      <img id="previewBrowLeft" class="preview-img brow" src="images/brow1.png" alt="左眉">
+      <img id="previewBrowRight" class="preview-img brow" src="images/brow1.png" alt="右眉">
+      <img id="previewEyeLeft" class="preview-img eye" src="images/eye1.png" alt="左眼">
+      <img id="previewEyeRight" class="preview-img eye" src="images/eye1.png" alt="右眼">
+    </div>
+    
+   <!-- 選項區：眼睛選項，共10個選項，三個一橫排 -->
+<div class="option-panel">
+    <div class="option-row">
+      <div class="option-button" data-eye="eye1.png">
+        <img src="images/eye1.png" alt="眼睛1">
+      </div>
+      <div class="option-button" data-eye="eye2.png">
+        <img src="images/eye2.png" alt="眼睛2">
+      </div>
+      <div class="option-button" data-eye="eye3.png">
+        <img src="images/eye3.png" alt="眼睛3">
+      </div>
+    </div>
+    <div class="option-row">
+      <div class="option-button" data-eye="eye4.png">
+        <img src="images/eye4.png" alt="眼睛4">
+      </div>
+      <div class="option-button" data-eye="eye5.png">
+        <img src="images/eye5.png" alt="眼睛5">
+      </div>
+      <div class="option-button" data-eye="eye6.png">
+        <img src="images/eye6.png" alt="眼睛6">
+      </div>
+    </div>
+    <div class="option-row">
+      <div class="option-button" data-eye="eye7.png">
+        <img src="images/eye7.png" alt="眼睛7">
+      </div>
+      <div class="option-button" data-eye="eye8.png">
+        <img src="images/eye8.png" alt="眼睛8">
+      </div>
+      <div class="option-button" data-eye="eye9.png">
+        <img src="images/eye9.png" alt="眼睛9">
+      </div>
+    </div>
+    <div class="option-row">
+        <div class="option-button" data-eye="eye10.png"><img src="images/eye10.png" alt="眼睛10"></div>
+        <div class="option-button placeholder"></div>
+        <div class="option-button placeholder"></div>
+      </div>
+    </div>
+    
+    <!-- 下一步按鈕 -->
+    <div class="next-container">
+      <button class="next-button" id="nextButton">
+        <img class="next-image" src="images/nextblack.png" alt="Next">
+      </button>
+    </div>
+  </div>
+  <script>document.addEventListener('DOMContentLoaded', () => {
+    // 取得預覽區各圖層
+    const faceLayer = document.getElementById('face-layer');
+    const previewEarLeft = document.getElementById('previewEarLeft');
+    const previewEarRight = document.getElementById('previewEarRight');
+    const previewBrowLeft = document.getElementById('previewBrowLeft');
+    const previewBrowRight = document.getElementById('previewBrowRight');
+    const previewEyeLeft = document.getElementById('previewEyeLeft');
+    const previewEyeRight = document.getElementById('previewEyeRight');
+  
+    // 取得眼睛選項按鈕與下一步按鈕
+    const eyeButtons = document.querySelectorAll('.option-button');
+    const nextButton = document.getElementById('nextButton');
+  
+    // 設定眉毛預設位置參數（與 page5 一致）
+    const defaultBrowTop = 31.5;
+    const defaultBrowLeftRight = 52.5;
+  
+    // 顯示臉型（page2 或其他頁面存入）
+    const savedFace = localStorage.getItem('selectedFace');
+    if (savedFace && faceLayer) {
+      faceLayer.src = savedFace;
+    }
+  
+    // 顯示耳朵（從 page4 選的資料）
+    const savedEar = localStorage.getItem('selectedEar');
+    if (savedEar) {
+      try {
+        const earData = JSON.parse(savedEar);
+        if (previewEarLeft && previewEarRight) {
+          previewEarLeft.src = earData.src;
+          previewEarRight.src = earData.src;
+          previewEarLeft.style.transform = `scale(${earData.scale})`;
+          previewEarRight.style.transform = `scale(${earData.scale}) scaleX(-1)`;
+          previewEarLeft.style.top = `${earData.height}px`;
+          previewEarRight.style.top = `${earData.height}px`;
+        }
+      } catch (err) {
+        console.error('耳朵資料解析錯誤', err);
+      }
+    }
+  
+    // 顯示眉毛（從 page5 選的）
+    const savedBrow = localStorage.getItem('selectedBrow');
+    if (savedBrow) {
+      if (previewBrowLeft) previewBrowLeft.src = savedBrow;
+      if (previewBrowRight) previewBrowRight.src = savedBrow;
+    }
+  
+    // 讀取第六頁存的眉毛高度與間距設定，更新眉毛位置
+    const browSettingsRaw = localStorage.getItem('selectedBrowSettings');
+    let verticalOffset = 0, spacingOffset = 0;
+    if (browSettingsRaw) {
+      try {
+        const browSettings = JSON.parse(browSettingsRaw);
+        verticalOffset = Number(browSettings.verticalOffset) || 0;
+        spacingOffset = Number(browSettings.spacingOffset) || 0;
+      } catch (err) {
+        console.error('解析眉毛設定錯誤', err);
+      }
+    }
+    if (previewBrowLeft) {
+      previewBrowLeft.style.top = `${defaultBrowTop + verticalOffset}%`;
+      previewBrowLeft.style.right = `${defaultBrowLeftRight + spacingOffset}%`;
+    }
+    if (previewBrowRight) {
+      previewBrowRight.style.top = `${defaultBrowTop + verticalOffset}%`;
+      previewBrowRight.style.left = `${defaultBrowLeftRight + spacingOffset}%`;
+    }
+  
+    // 顯示眼睛（如果已選則讀取；否則預設使用第一個）
+    const savedEye = localStorage.getItem('selectedEye');
+    if (savedEye) {
+      if (previewEyeLeft) previewEyeLeft.src = savedEye;
+      if (previewEyeRight) previewEyeRight.src = savedEye;
+    }
+    eyeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const selectedEyeImage = button.getAttribute('data-eye');
+          if (selectedEyeImage) {
+            // 這裡做 URL 安全處理，避免空格與括號造成錯誤
+            const safeImageName = encodeURIComponent(selectedEyeImage);
+            const eyeSrc = `images/${safeImageName}`;
+            if (previewEyeLeft) previewEyeLeft.src = eyeSrc;
+            if (previewEyeRight) previewEyeRight.src = eyeSrc;
+            localStorage.setItem('selectedEye', eyeSrc);
+          }
+          eyeButtons.forEach(btn => btn.classList.remove('selected'));
+          button.classList.add('selected');
+        });
+      });
+      
+  
+    // 下一步按鈕：儲存當前狀態並跳轉到下一頁（例如 page8.html）
+    if (nextButton) {
+      nextButton.addEventListener('click', () => {
+        // 此處若有其他資料，也可儲存
+        document.body.style.transition = "opacity 0.3s ease-out";
+        document.body.style.opacity = 0;
+        const nextImg = nextButton.querySelector('.next-image');
+        if (nextImg) {
+          nextImg.src = 'images/nextgray.png';
+        }
+        setTimeout(() => {
+          window.location.href = 'page8.html';
+        }, 300);
+      });
+    }
+  });
+  </script>
+</body>
+</html>

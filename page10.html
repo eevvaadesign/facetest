@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>選擇嘴巴</title>
+    <link rel="stylesheet" href="page10.css">
+</head>
+<body>
+    <div class="virtual-frame">
+        <!-- 返回按鈕 -->
+        <div class="back-button" onclick="history.back()"></div>
+
+        <!-- 預覽框：包含臉、耳、眉、眼、鼻、嘴 -->
+        <div class="preview-box">
+            <img id="face-layer" class="preview-img" src="images/face (1).png" alt="臉部">
+            <img id="previewEarLeft" class="ear" src="images/earin (2).png" alt="左耳">
+            <img id="previewEarRight" class="ear" src="images/earin (2).png" alt="右耳">
+            <img id="previewBrowLeft" class="preview-img brow" src="images/brow1.png" alt="左眉">
+            <img id="previewBrowRight" class="preview-img brow" src="images/brow1.png" alt="右眉">
+            <img id="previewEyeLeft" class="preview-img eye" src="images/eye1.png" alt="左眼">
+            <img id="previewEyeRight" class="preview-img eye" src="images/eye1.png" alt="右眼">
+            <img id="previewNose" class="preview-img nose" src="images/nose1.png" alt="鼻子">
+            <img id="previewMouth" class="preview-img mouth" src="images/mouth1.png" alt="嘴巴">
+        </div>
+
+        <!-- 選項區域 -->
+        <div class="option-panel">
+            <div class="option-row">
+                <div class="option-button" data-mouth="mouth1.png">
+                    <img src="images/mouth1.png" alt="嘴巴1">
+                </div>
+                <div class="option-button" data-mouth="mouth2.png">
+                    <img src="images/mouth2.png" alt="嘴巴2">
+                </div>
+                <div class="option-button" data-mouth="mouth3.png">
+                    <img src="images/mouth3.png" alt="嘴巴3">
+                </div>
+            </div>
+            <div class="option-row">
+                <div class="option-button placeholder"></div>
+                <div class="option-button placeholder"></div>
+                <div class="option-button placeholder"></div>
+            </div>
+        </div>
+
+        <!-- 下一步按鈕 -->
+        <div class="next-container">
+            <button class="next-button" id="nextButton">
+                <img class="next-image" src="images/nextblack.png" alt="Next">
+            </button>
+        </div>
+    </div>
+
+    <script src="page10.js"></script>
+</body>
+</html>

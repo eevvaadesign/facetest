@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>虛擬算命 - 第1頁</title>
+    <STyle>/* 讓 body 和 html 高度充滿視窗，並禁止滾動條 */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden; /* 禁用外部滾動條 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #ffffff; /* 鵝黃色背景 */
+        }
+        
+        /* 虛擬框，保持寬高比例（1125px : 2255px） */
+        .virtual-frame {
+            width: 100%; /* 寬度隨視窗寬度變動 */
+            height: 100vh; /* 高度根據視窗高度的 80% */
+            max-width: calc(100vh * (1125 / 2255)); /* 根據視窗高度比例調整寬度 */
+            position: relative;
+            overflow: hidden; /* 保證內部內容不會超出框 */
+        }
+        
+        /* 背景容器，頂部固定對齊 */
+        .background-container {
+            position: absolute; /* 保證背景不會跟隨滾動 */
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        /* 直式背景，會隨視窗變動大小，保持比例 */
+        .vertical-background {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            height: 100%;
+            background-size: cover; /* 背景覆蓋 */
+            background-position: center;
+            opacity: 0;
+            transition: opacity 2s ease-in-out;
+        }
+        
+        #bg1 {
+            opacity: 1; /* 初始顯示 bg1 */
+        }
+        
+        /* 顯示圖片 */
+        .talk-img {
+            position: absolute; /* 根據虛擬框進行絕對定位 */
+            opacity: 0; /* 初始隱藏 */
+            transition: opacity 1s, transform 1s ease-out; /* 調整 transform 動畫效果 */
+        }
+        
+        /* 定位圖片1的位置，根據虛擬框內的固定位置 */
+        #talk1 {
+            left: 6%; /* 根據虛擬框的定位來設置左邊距 */
+            top: 55%;  /* 初始設置 top 屬性 */
+            width: 69%; /* 設定寬度為原始圖片寬度的 60% */
+        }
+        
+        /* 定位圖片2的位置 */
+        #talk2 {
+            left: 35%; /* 根據虛擬框的定位來設置左邯距 */
+            top: 64%; /* 初始設置 top 屬性 */
+            width: 60%; /* 設定寬度為原始圖片寬度的 60% */
+        }
+        
+        /* 定位圖片3的位置 */
+        #talk3 {
+            left: 6%; /* 根據虛擬框的定位來設置左邊距 */
+            width: 69%; /* 設定寬度為原始圖片寬度的 60% */
+            top: 80%; /* 初始設置 top 屬性 */
+        }
+        
+        /* 開始按鈕與漣漪容器 */
+        .ripple-container {
+            position: absolute;
+            top: 65%;
+            left: 50%;
+            width: 80%;
+            height: 30%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            z-index: 10;
+          }
+          
+          .try-button {
+  position: absolute;
+  width: 60%;
+  height: 25%;
+  background: none;
+  cursor: pointer;
+  z-index: 20;
+border: hidden;
+  top: 38%;
+  left: 20%;
+  transform: translate(-50%, -50%);
+}
+
+        
+        .try-image {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 100%;
+          transform: translate(-50%, -50%);
+        }
+          
+        .ripple-line {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 26vh;
+  height: 5vh;
+  border-radius: 1.2vh; /* 改成圓角矩形 */
+  border: 3px solid rgb(0 0 0 / 90%);
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0.8;
+  animation: ripple 3s infinite ease-out;
+  pointer-events: none;
+}
+
+.ripple-line:nth-child(2) { animation-delay: 0s; }
+.ripple-line:nth-child(3) { animation-delay: 0.6s; }
+.ripple-line:nth-child(4) { animation-delay: 1.2s; }
+.ripple-line:nth-child(5) { animation-delay: 1.8s; }
+.ripple-line:nth-child(6) { animation-delay: 2.4s; }
+
+@keyframes ripple {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0.8;
+    border-width: 2px;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.4, 1.6);
+    opacity: 0;
+    border-width: 0.2px;
+  }
+}
+
+/* 顯示動畫時加上 active */
+.ripple-container.active {
+  opacity: 1;
+}
+
+          </STyle>
+</head>
+<body>
+    <!-- 虛擬框容器，會根據視窗高度自動調整大小，保持固定比例 -->
+    <div class="virtual-frame">
+        <div class="background-container">
+            <!-- 鵝黃色橫式背景 -->
+            <div class="horizontal-background"></div>
+
+            <!-- 直式背景 -->
+            <div class="vertical-background" id="bg1" style="background-image: url('images/bg1.png');"></div>
+            <div class="vertical-background" id="bg2" style="background-image: url('images/bg2.png');"></div>
+        </div>
+
+        <!-- 顯示圖片 -->
+        <div class="talk-box">
+            <img src="images/talk (1).png" id="talk1" class="talk-img">
+            <img src="images/talk (2).png" id="talk2" class="talk-img">
+            <img src="images/talk (3).png" id="talk3" class="talk-img">
+        </div>
+
+        <div class="ripple-container">
+            <button id="try-img" class="try-button">
+              <img src="images/try.png" alt="嘗試一下" class="try-image" />
+            </button>
+            <span class="ripple-line"></span>
+            <span class="ripple-line"></span>
+            <span class="ripple-line"></span>
+            <span class="ripple-line"></span>
+          </div>
+          
+    </div>
+
+    <script>window.onload = () => {
+        const bg1 = document.getElementById('bg1');
+        const bg2 = document.getElementById('bg2');
+        const talk1 = document.getElementById('talk1');
+        const talk2 = document.getElementById('talk2');
+        const talk3 = document.getElementById('talk3');
+        const tryBtn = document.getElementById('try-img');
+        const rippleContainer = document.querySelector('.ripple-container');
+    
+        // 2秒後淡出 bg1，顯示 bg2
+        setTimeout(() => {
+            bg1.style.opacity = 0; // 隱藏 bg1
+            bg2.style.opacity = 1; // 顯示 bg2
+    
+            // 顯示對話框，並依次顯示對話框和按鈕
+            setTimeout(() => {
+                talk1.style.opacity = 1;
+                talk1.style.transform = 'translateY(-20%)'; // 上浮效果
+                talk1.style.top = '18%'; // 調整 talk1 的位置
+            }, 2000);
+    
+            setTimeout(() => {
+                talk2.style.opacity = 1;
+                talk2.style.transform = 'translateY(-20%)'; // 上浮效果
+                talk2.style.top = '41%'; // 調整 talk2 的位置
+            }, 3000);
+    
+            setTimeout(() => {
+                talk3.style.opacity = 1;
+                talk3.style.transform = 'translateY(-20%)'; // 上浮效果
+                talk3.style.top = '50%'; // 調整 talk3 的位置
+            }, 4000);
+    
+            // 顯示按鈕 (延遲1000毫秒)
+            setTimeout(() => {
+                tryBtn.style.opacity = 1;
+                tryBtn.style.transform = 'translateY(0)';
+                // 開始漣漪特效
+                rippleContainer.classList.add('active');
+            }, 5000); // 延遲5秒後顯示
+            window.onload = () => {
+                document.getElementById("talk1").style.opacity = 1;
+                setTimeout(() => {
+                  document.getElementById("talk2").style.opacity = 1;
+                }, 1000);
+                setTimeout(() => {
+                  document.getElementById("talk3").style.opacity = 1;
+                }, 2000);
+                setTimeout(() => {
+                  document.querySelector(".ripple-container").classList.add("active");
+                }, 3000);
+              };
+    
+        }, 2000); // 在 bg1 顯示 2 秒後執行
+        
+    };
+    document.getElementById('try-img').addEventListener('click', () => {
+        window.location.href = 'page2.html';
+      });</script>
+</body>
+</html>

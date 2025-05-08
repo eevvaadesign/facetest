@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>耳型選擇頁</title>
+  <style>/* 整體頁面設定 */
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      background-color: #ffffff;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    /* 虛擬框架：模擬手機螢幕，保持 1125×2255 的比例 */
+    .virtual-frame {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      /* 根據視窗高度計算最大寬度，確保比例鎖定 */
+      max-width: calc(100vh * (1125 / 2255));
+      overflow: hidden;
+      background-image: url('images/bg4.png');
+      background-size: cover;
+      background-position: center;
+      z-index: 0;
+    }
+    /* 預覽框 */
+    .preview-box {
+      position: relative;
+      top: 34%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 78%;
+      height: 40%;
+      overflow: hidden;
+      z-index: 1;
+    }
+   .preview-img {
+      position: absolute;
+      transform: scale(1);
+      max-width: 100%;
+      max-height: 100%;
+      z-index: 3;
+    }
+    /* 臉部圖層 */
+    #face-layer {
+      z-index: 3;
+    }
+   .ear {
+      position: absolute;
+      top: 50%; /* 放在預覽框高度的中間 */
+      transform: translateY(-50%); /* 垂直置中 */
+      max-width: 40%;
+      max-height: 100%;
+      z-index: 2;
+     }
+     #ear-left {
+      left: 0%;
+      transform: translate(-50%, -50%) scaleX(-1); /* 左右 + 垂直置中 + 鏡射 */
+     }
+     #ear-right {
+      right: 0%;
+      transform: translate(50%, -50%);
+    }
+    /* 控制面板相關樣式 */
+    .control-panel {
+      position: absolute;
+      top: 73.4%;              /* 依需求調整 */
+      left: 50.1%;
+      transform: translate(-50%, -50%);  /* 完全置中 */
+      width: 60%;              /* 以虛擬框寬度的百分比 */
+      height: 26.8%;           /* 以虛擬框高度的百分比 */
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;  /* 各控制群組垂直平均分佈 */
+      align-items: center;
+      z-index: 4;
+      gap: 2%; /* 控制每組之間的間距 */
+      box-sizing: border-box;
+    }
+    /* 每一組控制群組：左右排列，左右各一按鈕，中間一滑桿 */
+    .control-group {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    /* 刪掉或註解掉這行，恢復預設方向 */
+#height-range {
+  direction: rtl;
+}
+
+    /* 調整按鈕樣式 */
+    .control-btn {
+      width: 10%;       /* 占群組寬度比例，根據實際調整 */
+      aspect-ratio: 1 / 1; 
+      background-color: #853fff00;
+      border: none;
+      cursor: pointer;
+      z-index: 5;
+    }
+    /* 調整滑桿樣式 */
+    input[type="range"] {
+      width: 60%;       /* 根據左右按鈕的占比（15%+15%+70% = 100%） */
+      height: 34%;     /* 可根據需要微調 */
+      -webkit-appearance: none;
+      appearance: none;
+      background: #d3d3d3;
+      border-radius: 4px;
+      outline: none;
+      transition: background 0.3s ease;
+    }
+    /* 自定義滑桿圓球 */
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 15%;       /* 占群組寬度比例，根據實際調整 */
+      aspect-ratio: 1 / 1; 
+      border-radius: 50%;
+      background: #ffffff;
+      cursor: pointer;
+      border: none;
+    }
+
+    /* 還原按鈕樣式 */
+    #reset-button {
+      position: absolute;
+      bottom: 5%;     /* 離底部距離 */
+      right: 0%;      /* 離右邊距離 */
+      background-color: #0026fb00;
+      border: none;
+      cursor: pointer;
+      z-index: 6;
+    }
+    .next-container {
+      position: absolute;
+      bottom: 1.25%; /* 可根據實際需求微調 */
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      height: auto; /* 讓內容決定高度 */
+      z-index: 10;
+    }
+    .next-button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+    .next-image {
+      width: 100%;
+      height: auto;
+    }
+    .back-button {
+      position: absolute;
+      width: 50px;
+      left:0%;
+      top:0%;
+      height: 35px;
+      background-color: #9c27b000; /* 藍色 */
+      cursor: pointer;
+      z-index: 5;
+      border-radius: 15px;
+    }</style>
+</head>
+<body>
+  <div class="virtual-frame">
+    <!-- 預覽框 -->
+    <div class="preview-box">
+      <img id="face-layer" class="preview-img" src="images/face (1).png" alt="預覽臉部">
+      <!-- 耳朵圖層 -->
+      <img id="ear-left" class="ear" src="images/earin (2).png" alt="左耳" style="z-index: 2;">
+      <img id="ear-right" class="ear" src="images/earin (2).png" alt="右耳" style="z-index: 2;">
+    </div>
+
+ <!-- 返回按鈕 -->
+    <div class="back-button" onclick="history.back()"></div>
+
+    <!-- 控制面板 -->
+    <div class="control-panel">
+      <!-- 耳型控制 -->
+      <div class="control-group">
+        <button id="ear-decrease" class="control-btn"></button>
+        <input type="range" id="ear-range" min="1" max="3" step="1" value="2" disabled/>
+        <button id="ear-increase" class="control-btn"></button>
+      </div>
+
+      <!-- 大小控制 -->
+      <div class="control-group">
+        <button id="size-decrease" class="control-btn"></button>
+        <input type="range" id="size-range" min="0.3" max="2" step="0.2" value="1.0" disabled />
+        <button id="size-increase" class="control-btn"></button>
+      </div>
+
+      <!-- 高低控制 -->
+      <div class="control-group">
+        <button id="height-decrease" class="control-btn"></button>
+        <input type="range" id="height-range" min="-40" max="60" step="10" value="10" disabled />
+        <button id="height-increase" class="control-btn"></button>
+      </div>
+    
+
+    <!-- 還原控制 -->
+    <div class="control-group">
+      <button id="reset-button" class="control-btn"></button>
+    </div>
+  </div>
+  
+    <!-- 下一步按鈕 -->
+    <div class="next-container">
+      <button class="next-button" id="nextButton">
+        <img class="next-image" src="images/nextblack.png" alt="Next">
+      </button>
+    </div>
+  </div>
+
+  <script>document.addEventListener('DOMContentLoaded', () => {
+    const earLeft = document.getElementById('ear-left');
+    const earRight = document.getElementById('ear-right');
+    const nextButton = document.getElementById('nextButton');
+    const earRange = document.getElementById('ear-range');
+    const sizeRange = document.getElementById('size-range');
+    const previewFace = document.getElementById('face-layer');
+    const heightRange = document.getElementById('height-range');
+  
+    let earIndex = 2;
+    let earScale = 1.0;
+    let earHeight = 10;
+  
+    const earImages = [
+      'images/earin (1).png',
+      'images/earin (2).png',
+      'images/earin (3).png'
+    ];
+  
+    function updateSliderBackground(slider) {
+      const value = (slider.value - slider.min) / (slider.max - slider.min) * 100;
+      slider.style.background = `linear-gradient(to right, rgb(0, 0, 0) 0%, rgb(0, 0, 0) ${value}%, #d3d3d3 ${value}%, #d3d3d3 100%)`;
+    }
+  
+    updateSliderBackground(earRange);
+    updateSliderBackground(sizeRange);
+    updateSliderBackground(heightRange);
+  
+    earRange.addEventListener('input', () => { updateSliderBackground(earRange); });
+    sizeRange.addEventListener('input', () => { updateSliderBackground(sizeRange); });
+    heightRange.addEventListener('input', () => { updateSliderBackground(heightRange); });
+    function updateEars() {
+  const src = earImages[earIndex - 1];
+  earLeft.src = src;
+  earRight.src = src;
+
+  // 不動 top，用 translateY 做微調
+  earLeft.style.transform = `translateY(calc(-50% + ${earHeight}px)) scale(${earScale}) scaleX(-1)`;
+  earRight.style.transform = `translateY(calc(-50% + ${earHeight}px)) scale(${earScale})`;
+
+  // 把選擇存起來
+  localStorage.setItem('selectedEar', JSON.stringify({
+    src: src,
+    scale: earScale,
+    height: earHeight
+  }));
+  // —— 新增這一行：儲存 earIndex
+  localStorage.setItem('selectedEarIndex', earIndex);
+}
+
+    // 1. 顯示臉型
+    if (previewFace) {
+      const savedFace = localStorage.getItem('selectedFace');
+      if (savedFace) {
+        previewFace.src = savedFace;
+      }
+    }
+    document.getElementById('ear-decrease').addEventListener('click', () => {
+      if (earIndex > 1) {
+        earIndex--;
+        earRange.value = earIndex;
+        updateSliderBackground(earRange);
+        updateEars();
+      }
+    });
+  
+    document.getElementById('ear-increase').addEventListener('click', () => {
+      if (earIndex < earImages.length) {
+        earIndex++;
+        earRange.value = earIndex;
+        updateSliderBackground(earRange);
+        updateEars();
+      }
+    });
+  
+    document.getElementById('size-decrease').addEventListener('click', () => {
+      if (earScale > 0.3) {
+        earScale -= 0.2;
+        sizeRange.value = earScale;
+        updateSliderBackground(sizeRange);
+        updateEars();
+      }
+    });
+  
+    document.getElementById('size-increase').addEventListener('click', () => {
+      if (earScale < 2) {
+        earScale += 0.2;
+        sizeRange.value = earScale;
+        updateSliderBackground(sizeRange);
+        updateEars();
+      }
+    });
+  
+
+    document.getElementById('height-increase').addEventListener('click', () => {
+  const min = parseInt(heightRange.min, 10);
+  // 減少高度：earHeight 往上走
+  earHeight = Math.max(earHeight - 10, min);
+  heightRange.value = earHeight;
+  updateSliderBackground(heightRange);
+  updateEars();
+});
+
+document.getElementById('height-decrease').addEventListener('click', () => {
+  const max = parseInt(heightRange.max, 10);
+  // 增加高度：earHeight 往下走
+  earHeight = Math.min(earHeight + 10, max);
+  heightRange.value = earHeight;
+  updateSliderBackground(heightRange);
+  updateEars();
+});
+  
+    document.getElementById('reset-button').addEventListener('click', () => {
+      earIndex = 2;
+      earScale = 1.0;
+      earHeight = 10;
+      earRange.value = earIndex;
+      sizeRange.value = earScale;
+      heightRange.value = earHeight;
+      updateSliderBackground(earRange);
+      updateSliderBackground(sizeRange);
+      updateSliderBackground(heightRange);
+      updateEars();
+    });
+  
+    updateEars();
+    function updateSliderBackground(slider) {
+  // 1. 先 parse 出數字（或給預設）
+  const min = parseFloat(slider.min) || 0;
+  const max = parseFloat(slider.max) || 100;
+  const val = parseFloat(slider.value);
+  if (isNaN(val)) {
+    console.error('slider.value 不是數字:', slider.value);
+    return;
+  }
+
+  // 2. 計算 pct（0–100）並 clamp
+  let pct = (val - min) / (max - min) * 100;
+  pct = Math.min(Math.max(pct, 0), 100);
+
+  // 3. 高度滑桿要反向填色，其它正常
+  const fillPct = slider.id === 'height-range'
+    ? 100 - pct   // 值越小 → 填色越多
+    : pct;        // 其他 slider 正向
+
+  // 4. 如果 fillPct 跑出合法範圍也 clamp
+  const fill = Math.min(Math.max(fillPct, 0), 100);
+
+  // 5. 一行字串，確保沒有多餘換行
+  slider.style.background =
+    `linear-gradient(to right, #000 0%, #000 ${fill}%, #d3d3d3 ${fill}%, #d3d3d3 100%)`;
+}
+
+    // 下一步按鈕：換圖片並跳頁
+    nextButton.addEventListener('click', () => {
+      // 換成灰色
+      const nextImage = document.querySelector('.next-image');
+      if (nextImage) {
+        nextImage.src = 'images/nextgray.png';
+      }
+      document.body.style.transition = 'opacity 0.3s ease-out';
+      document.body.style.opacity = 0;
+      setTimeout(() => {
+        window.location.href = 'page5.html';
+      }, 300);
+    });
+  });
+  </script>
+</body>
+</html>
